@@ -78,13 +78,16 @@ function App() {
 
     doc.setFont("helvetica", "bold");
     doc.setFontSize(13);
-    doc.text(`Grand Total: ₹${total.toFixed(2)}`, doc.internal.pageSize.getWidth() - 20, doc.lastAutoTable.finalY + 15, { align: "right" });
+     const pageWidth = doc.internal.pageSize.getWidth();
+      const text = `Grand Total: ₹${total.toFixed(2)}`;
 
+    // Draw centered text
+    doc.text(text, pageWidth / 2, doc.lastAutoTable.finalY + 15, { align: "center" });
     doc.setFontSize(10);
     doc.setTextColor(120);
     doc.text("Thank you for your purchase!", doc.internal.pageSize.getWidth() / 2, doc.lastAutoTable.finalY + 30, { align: "center" });
 
-    doc.save(`Invoice_${customerName}_${new Date().toISOString().slice(0, 10)}.pdf`);
+    doc.save(`${customerName}_Invoice__${new Date().toISOString().slice(0, 10)}.pdf`);
   };
 
   return (
