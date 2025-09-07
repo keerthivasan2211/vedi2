@@ -58,9 +58,9 @@ function App() {
 
     doc.setFont("helvetica", "normal");
     doc.setFontSize(11);
-    doc.text(`Invoice No: INV-${Math.floor(Math.random() * 100000)}`, 20, 35);
+   
     doc.text(`Date: ${new Date().toLocaleDateString()}`, 20, 42);
-    doc.text(`Billed To: ${customerName}`, 20, 49);
+  
 
     autoTable(doc, {
       head: [["Product", "Price", "Qty", "Subtotal"]],
