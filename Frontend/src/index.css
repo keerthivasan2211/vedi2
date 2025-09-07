@@ -1,0 +1,326 @@
+/* Reset default styles for consistency */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Main container with flex layout */
+.app-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f1f3f5;
+}
+
+/* Product section styling */
+.product-section {
+  flex: 2;
+  background-color: #ffffff;
+  padding: 1.5rem;
+  overflow-y: auto;
+  height: 100vh;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Bill section styling */
+.bill-section {
+  flex: 1;
+  background-color: #f9f9f9;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Section title styling */
+.section-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #2d3436;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+}
+
+.section-title .icon {
+  margin-right: 0.5rem;
+}
+
+/* Search input styling */
+.search-input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #dfe6e9;
+  border-radius: 6px;
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #2c5282;
+  box-shadow: 0 0 0 3px rgba(44, 82, 130, 0.2);
+}
+
+/* Product list styling */
+.product-list {
+  list-style: none;
+}
+
+.product-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background-color: #f8fafc;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease;
+}
+
+.product-item:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.product-name {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #2d3436;
+}
+
+.product-price {
+  margin: 0.25rem 0;
+  color: #636e72;
+}
+
+.product-discount {
+  margin: 0.25rem 0;
+  color: #27ae60;
+  font-weight: 500;
+}
+
+.product-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.add-button,
+.remove-button {
+  padding: 0.5rem 0.75rem;
+  border: none;
+  border-radius: 4px;
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.add-button {
+  background-color: #27ae60;
+}
+
+.add-button:hover {
+  background-color: #219653;
+}
+
+.remove-button {
+  background-color: #e74c3c;
+}
+
+.remove-button:hover {
+  background-color: #c0392b;
+}
+
+.quantity {
+  font-weight: bold;
+  font-size: 1rem;
+  color: #2d3436;
+}
+
+.no-products {
+  color: #7f8c8d;
+  font-size: 1rem;
+}
+
+/* Bill table styling */
+.bill-table-container {
+  flex: 1;
+  overflow-y: auto;
+  margin-bottom: 1rem;
+}
+
+.bill-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.bill-table th,
+.bill-table td {
+  border: 1px solid #dfe6e9;
+  padding: 0.5rem;
+}
+
+.bill-table th {
+  background-color: #dfe6e9;
+  font-weight: 600;
+  color: #2d3436;
+  text-align: left;
+}
+
+.bill-table td {
+  color: #2d3436;
+}
+
+.bill-table tr:hover {
+  background-color: #f1f3f5;
+}
+
+.text-right {
+  text-align: right; /* fixed */
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-green {
+  color: #27ae60;
+  font-weight: 500;
+}
+
+.empty-cart {
+  color: #7f8c8d;
+  font-size: 1rem;
+}
+
+/* Total section styling */
+.total-section {
+  border-top: 2px solid #dfe6e9;
+  padding-top: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.total-amount {
+  font-size: 1.125rem;
+  font-weight: bold;
+  color: #2d3436;
+}
+
+.download-button {
+  padding: 0.625rem 1.25rem;
+  border: none;
+  border-radius: 4px;
+  background-color: #2c5282;
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.download-button:hover {
+  background-color: #1a4066;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .app-container {
+    flex-direction: column;
+  }
+
+  .product-section,
+  .bill-section {
+    width: 100%;
+    height: auto;
+    box-shadow: none;
+  }
+
+  .product-section {
+    padding-bottom: 1rem;
+  }
+
+  .bill-section {
+    padding-top: 0;
+  }
+
+  .section-title {
+    font-size: 1.25rem;
+  }
+
+  .search-input {
+    font-size: 0.875rem;
+    padding: 0.625rem;
+  }
+
+  .product-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.75rem;
+  }
+
+  .product-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .bill-table {
+    font-size: 0.75rem;
+    overflow-x: auto;
+    display: block;
+  }
+
+  .bill-table th,
+  .bill-table td {
+    padding: 0.375rem;
+  }
+
+  .total-amount {
+    font-size: 1rem;
+  }
+
+  .download-button {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .section-title {
+    font-size: 1.125rem;
+  }
+
+  .search-input {
+    padding: 0.5rem;
+  }
+
+  .product-item {
+    padding: 0.625rem;
+  }
+
+  .product-name {
+    font-size: 1rem; /* fixed */
+  }
+
+  .product-price,
+  .product-discount {
+    font-size: 0.875rem;
+  }
+
+  .bill-table th,
+  .bill-table td {
+    padding: 0.25rem;
+  }
+
+  .download-button {
+    padding: 0.5rem 0.75rem;
+  }
+}

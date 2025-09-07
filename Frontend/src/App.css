@@ -1,0 +1,152 @@
+.app-container {
+  display: flex;
+  gap: 2rem;
+  padding: 2rem;
+  font-family: "Segoe UI", Tahoma, sans-serif;
+  background: #f8f9fa;
+  color: #333;
+}
+
+/* Sections */
+.product-section, .bill-section {
+  flex: 1;
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* Titles */
+.section-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 0.5rem;
+}
+
+/* Search */
+.search-input, .customer-input {
+  width: 100%;
+  padding: 0.6rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+/* Product list */
+.product-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.product-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background: #fdfdfd;
+  border: 1px solid #eee;
+  border-radius: 8px;
+}
+
+.product-name {
+
+  font-size: 25px;
+  font-weight: bolder;
+}
+
+.product-desc {
+    font-size: 20px;
+    color: #444;
+}
+
+.product-price {
+  font-size:20px;
+  color: #444;
+}
+
+.product-discount {
+  font-size: 20px;
+  color: #28a745;
+}
+
+.product-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn {
+  border: none;
+  padding: 0.4rem 0.7rem;
+  font-size: 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn.add {
+  background: #007bff;
+  color: #fff;
+}
+
+.btn.remove {
+  background: #dc3545;
+  color: #fff;
+}
+
+.quantity {
+  font-size: 1rem;
+  font-weight: 600;
+  min-width: 20px;
+  text-align: center;
+}
+
+/* Bill table */
+.bill-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1rem;
+}
+
+.bill-table th, .bill-table td {
+  border: 1px solid #ddd;
+  padding: 0.6rem;
+  font-size: 0.9rem;
+}
+
+.bill-table th {
+  background: #007bff;
+  color: #fff;
+  text-align: center;
+}
+
+.text-right { text-align: right; }
+.text-center { text-align: center; }
+.text-green { color: #28a745; }
+
+/* Total */
+.total-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.total-amount {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.download-button {
+  background: #28a745;
+  color: #fff;
+  padding: 0.6rem 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.download-button:hover {
+  background: #218838;
+}
