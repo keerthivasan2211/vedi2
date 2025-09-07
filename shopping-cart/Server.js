@@ -195,7 +195,7 @@ app.put("/cart/decrease/:name", (req, res) => {
 app.get("/cart/display", (req, res) => {
   const cartDetails = cart.map((item) => {
     const originalPrice = item.price;
-    const discountedPrice = Math.round(originalPrice * 0.8); // 20% off
+    const discountedPrice = Math.round(originalPrice * 0.85); // 20% off
     const subtotal = discountedPrice * item.quantity;
 
     return {
