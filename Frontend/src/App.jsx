@@ -4,7 +4,7 @@ import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 import "./App.css";
 
-const API = "http://localhost:5000"; // backend server
+const API = "https://crackers-app.onrender.com"; // backend server
 
 function App() {
   const [products, setProducts] = useState([]);
