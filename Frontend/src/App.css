@@ -25,7 +25,7 @@
   padding-bottom: 0.5rem;
 }
 
-/* Search */
+/* Search & Customer Input */
 .search-input, .customer-input {
   width: 100%;
   padding: 0.6rem;
@@ -35,118 +35,96 @@
 }
 
 /* Product list */
-.product-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.product-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
-  padding: 1rem;
-  background: #fdfdfd;
-  border: 1px solid #eee;
-  border-radius: 8px;
-}
-
-.product-name {
-
-  font-size: 25px;
-  font-weight: bolder;
-}
-
-.product-desc {
-    font-size: 20px;
-    color: #444;
-}
-
-.product-price {
-  font-size:20px;
-  color: #444;
-}
-
-.product-discount {
-  font-size: 20px;
-  color: #28a745;
-}
-
-.product-actions {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.btn {
-  border: none;
-  padding: 0.4rem 0.7rem;
-  font-size: 1rem;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.btn.add {
-  background: #007bff;
-  color: #fff;
-}
-
-.btn.remove {
-  background: #dc3545;
-  color: #fff;
-}
-
-.quantity {
-  font-size: 1rem;
-  font-weight: 600;
-  min-width: 20px;
-  text-align: center;
-}
+.product-list { list-style: none; padding: 0; margin: 0; }
+.product-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding: 1rem; background: #fdfdfd; border: 1px solid #eee; border-radius: 8px; }
+.product-name { font-size: 25px; font-weight: bolder; }
+.product-desc { font-size: 20px; color: #444; }
+.product-price { font-size: 20px; color: #444; }
+.product-discount { font-size: 20px; color: #28a745; }
+.product-actions { display: flex; align-items: center; gap: 0.5rem; }
+.btn { border: none; padding: 0.4rem 0.7rem; font-size: 1rem; border-radius: 6px; cursor: pointer; }
+.btn.add { background: #007bff; color: #fff; }
+.btn.remove { background: #dc3545; color: #fff; }
+.quantity { font-size: 1rem; font-weight: 600; min-width: 20px; text-align: center; }
 
 /* Bill table */
-.bill-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 1rem;
-}
-
-.bill-table th, .bill-table td {
-  border: 1px solid #ddd;
-  padding: 0.6rem;
-  font-size: 0.9rem;
-}
-
-.bill-table th {
-  background: #007bff;
-  color: #fff;
-  text-align: center;
-}
-
+.bill-table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; }
+.bill-table th, .bill-table td { border: 1px solid #ddd; padding: 0.6rem; font-size: 0.9rem; }
+.bill-table th { background: #007bff; color: #fff; text-align: center; }
 .text-right { text-align: right; }
 .text-center { text-align: center; }
 .text-green { color: #28a745; }
 
 /* Total */
-.total-section {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+.total-section { display: flex; justify-content: space-between; align-items: center; }
+.total-amount { font-size: 1.2rem; font-weight: 600; }
+.download-button { background: #28a745; color: #fff; padding: 0.6rem 1rem; border: none; border-radius: 8px; cursor: pointer; }
+.download-button:hover { background: #218838; }
 
-.total-amount {
-  font-size: 1.2rem;
-  font-weight: 600;
-}
-
-.download-button {
-  background: #28a745;
-  color: #fff;
-  padding: 0.6rem 1rem;
+/* Toggle button for mobile */
+.toggle-invoice-btn {
+  display: none;
+  margin: 1rem 0;
+  background: #007bff;
+  color: white;
   border: none;
+  padding: 0.6rem 1rem;
   border-radius: 8px;
   cursor: pointer;
 }
-.download-button:hover {
-  background: #218838;
+
+/* Overlay */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.3);
+  z-index: 998;
+}
+
+/* Top drawer animation for mobile */
+/* Toggle button for mobile - fixed at top */
+@media (max-width: 768px) {
+  .toggle-invoice-btn {
+    display: block;
+    position: fixed;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    margin: 0;
+    background: #007bff;
+    color: #fff;
+    border: none;
+    padding: 0.6rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  }
+
+  .app-container {
+    flex-direction: column;
+    padding-top: 60px; /* space for the fixed button */
+  }
+
+  .bill-section {
+    position: fixed;
+    top: -100%;
+    left: 0;
+    right: 0;
+    background: #fff;
+    z-index: 999;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    border-radius: 0 0 12px 12px;
+    transition: top 0.3s ease-in-out;
+  }
+
+  .bill-section.show-top { top: 50px; } /* below the fixed button */
+
+  .overlay { top: 50px; } /* overlay starts below the button */
 }
