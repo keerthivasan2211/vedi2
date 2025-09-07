@@ -103,7 +103,7 @@ function App() {
                 <h3 className="product-name">{p.name}</h3>
                 <p className="product-desc">{p.description}</p>
                 <p className="product-price">₹{p.price.toFixed(2)}</p>
-                <p className="product-discount">₹{(p.price * 0.85).toFixed(2)} (15% OFF)</p>
+                <p className="product-discount">₹{(p.price * 0.85).toFixed(2)} (85% OFF)</p>
               </div>
               <div className="product-actions">
                 <button onClick={() => addToCart(p.name)} className="btn add">+</button>
