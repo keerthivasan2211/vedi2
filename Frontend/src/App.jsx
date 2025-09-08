@@ -83,8 +83,11 @@ function App() {
       headStyles: { fillColor: [74, 144, 226] }
     });
 
-    const total = cart.reduce((sum, item) => sum + item.subtotal, 0).toFixed(2);
-    doc.text(`Total: ₹${total}`, 14, doc.lastAutoTable.finalY + 10);
+   const total = cart
+  .reduce((sum, item) => sum + item.subtotal, 0) * 0.85;
+
+const discountedTotal = total.toFixed(2);
+    doc.text(`Total: ₹${discountedTotal}`, 14, doc.lastAutoTable.finalY + 10);
     doc.save(`${billName || "cart_invoice"}.pdf`);
   };
 
