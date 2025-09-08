@@ -4,7 +4,7 @@ import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 import "./App.css";
 
-const API = "http://localhost:5000";
+const API = "https://vedi2-backend.onrender.com";
 
 function App() {
   const [products, setProducts] = useState({});
