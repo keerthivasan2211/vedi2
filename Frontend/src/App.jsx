@@ -89,11 +89,8 @@ function App() {
       headStyles: { fillColor: [74, 144, 226] }
     });
 
-    const total = cart.reduce((sum, item) => sum + item.subtotal, 0);
-    const discountedTotal = total.toFixed(2);
-
-const originalTotal = cart.reduce((sum, item) => sum + item.subtotal, 0);
-const discountedTotal_total = (originalTotal * 0.85).toFixed(2);
+    const originalTotal = cart.reduce((sum, item) => sum + item.subtotal, 0);
+    const discountedTotal = (originalTotal * 0.85).toFixed(2);
 
     // ✅ Get current date and time
     const now = new Date();
@@ -103,17 +100,21 @@ const discountedTotal_total = (originalTotal * 0.85).toFixed(2);
     // ✅ Format date for filename (YYYY-MM-DD)
     const fileDate = now.toISOString().split("T")[0];
 
-    doc.text(`Name: ${billName}`, 14, doc.lastAutoTable.finalY + 10);
-    doc.text(`Date: ${dateStr}`, 14, doc.lastAutoTable.finalY + 20);
-    doc.text(`Time: ${timeStr}`, 14, doc.lastAutoTable.finalY + 30);
-    doc.text(`Total: ₹${discountedTotal}`, 14, doc.lastAutoTable.finalY + 40);
-doc.text(`Discount Total: ₹${discountedTotal_total}`, 14, doc.lastAutoTable.finalY + 40);
+    // ✅ Better alignment for details
+    let yPos = doc.lastAutoTable.finalY + 15;
+    doc.setFontSize(12);
+    doc.text(`Customer Name: ${billName}`, 14, yPos);
+    doc.text(`Date: ${dateStr}`, 14, yPos + 10);
+    doc.text(`Time: ${timeStr}`, 14, yPos + 20);
 
+    doc.setFontSize(14);
+    doc.setTextColor(0, 0, 0);
+    doc.text(`Original Total: ₹${originalTotal.toFixed(2)}`, 14, yPos + 35);
+    doc.text(`Discounted Total: ₹${discountedTotal}`, 14, yPos + 45);
 
     // ✅ Save with billName + date in file name
     doc.save(`${billName}_${fileDate}_invoice.pdf`);
   };
-
   return (
     <div className="App">
       {/* Search Bar */}
