@@ -481,3 +481,36 @@ h1 {
   100% { transform: rotate(360deg); }
 }
 
+.quantity-control input[type="number"] {
+  width: 60px;
+  min-width: 50px;
+  padding: 8px 12px;
+  font-size: 1rem;
+  font-weight: 500;
+  text-align: center;
+  border: 2px solid #444;
+  border-radius: 12px;
+  background-color: #2a2c36;
+  color: #e0e0e0;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  -moz-appearance: textfield; /* Firefox remove arrows */
+}
+
+/* Remove arrows in Chrome, Safari, Edge */
+.quantity-control input[type="number"]::-webkit-inner-spin-button,
+.quantity-control input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Focus style */
+.quantity-control input[type="number"]:focus {
+  border-color: #4a90e2;
+  box-shadow: 0 0 8px rgba(74, 144, 226, 0.7);
+  background-color: #3a3d4a;
+  color: #fff;
+  outline: none;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+}
