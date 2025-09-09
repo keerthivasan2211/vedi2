@@ -6,7 +6,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(cors({
-  origin: "http://10.70.100.48:5173",
+  origin: "http://vedi2-backend.onrender.com",
   credentials: true,
 }));
 app.use(bodyParser.json());
