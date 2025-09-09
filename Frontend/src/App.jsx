@@ -6,13 +6,18 @@ import "./App.css";
 
 const API = "https://vedi2-backend.onrender.com";
 
+
+
 function App() {
   const [products, setProducts] = useState({});
   const [cart, setCart] = useState([]);
   const [search, setSearch] = useState("");
   const [billName, setBillName] = useState("");
   const [showCart, setShowCart] = useState(false);
-  const [loading, setLoading] = useState(true); // ✅ loader state
+  const [loading, setLoading] = useState(true);
+
+  // Local state to store manual input values before sending to server
+  const [localQuantities, setLocalQuantities] = useState({});
 
   const fetchProducts = async () => {
     const res = await axios.get(`${API}/products`);
@@ -38,16 +43,26 @@ function App() {
   }, [showCart]);
 
   const increaseCart = async (name) => {
-    await axios.put(`${API}/cart/increase/${name}`);
+    await axios.put(`${API}/cart/increase/${encodeURIComponent(name)}`);
     fetchCart();
   };
 
   const decreaseCart = async (name) => {
-    await axios.put(`${API}/cart/decrease/${name}`);
+    await axios.put(`${API}/cart/decrease/${encodeURIComponent(name)}`);
     fetchCart();
   };
 
-  const getQuantity = (name) => {
+  // New function to set quantity directly
+  const updateCartQuantity = async (name, quantity) => {
+    await axios.put(`${API}/cart/update/${encodeURIComponent(name)}`, { quantity });
+    fetchCart();
+  };
+
+  // Compute what to show in quantity: priority is manual input, otherwise server state
+  const getQuantityToShow = (name) => {
+    if (localQuantities[name] !== undefined) {
+      return localQuantities[name];
+    }
     const item = cart.find((i) => i.name === name);
     return item ? item.quantity : 0;
   };
@@ -65,7 +80,6 @@ function App() {
 
   const downloadPDF = () => {
     if (cart.length === 0) return;
-
     if (!billName.trim()) {
       alert("⚠️ Please enter your name before downloading the bill.");
       return;
@@ -116,7 +130,6 @@ function App() {
     doc.save(`${billName}_${fileDate}_invoice.pdf`);
   };
 
-  // ✅ Loader UI
   if (loading) {
     return (
       <div className="loader-container">
@@ -128,7 +141,6 @@ function App() {
 
   return (
     <div className="App">
-      {/* Search Bar */}
       <div className="search-bar">
         <input
           type="text"
@@ -138,13 +150,11 @@ function App() {
         />
       </div>
 
-      {/* Main Layout: Products + Cart */}
       <div className="main-content">
         <div className="products">
           {Object.keys(filteredProducts).map((group) => (
             <div key={group} className="group">
               <h2>{group}</h2>
-
               <div className="group-items">
                 {filteredProducts[group].map((item) => (
                   <div key={item.name} className="product-card">
@@ -153,7 +163,30 @@ function App() {
                     <p>Original Price: ₹{item.price.toFixed(2)}</p>
                     <div className="quantity-control">
                       <button onClick={() => decreaseCart(item.name)}>-</button>
-                      <span className="quantity">{getQuantity(item.name)}</span>
+                      <input
+                        type="number"
+                        className="quantity-input"
+                        min="0"
+                        value={getQuantityToShow(item.name)}
+                        onChange={(e) => {
+                          const val = parseInt(e.target.value, 10);
+                          setLocalQuantities((prev) => ({
+                            ...prev,
+                            [item.name]: isNaN(val) ? 0 : val
+                          }));
+                        }}
+                        onBlur={(e) => {
+                          const val = parseInt(e.target.value, 10);
+                          if (!isNaN(val)) {
+                            updateCartQuantity(item.name, val);
+                          }
+                          setLocalQuantities((prev) => {
+                            const next = { ...prev };
+                            delete next[item.name];
+                            return next;
+                          });
+                        }}
+                      />
                       <button onClick={() => increaseCart(item.name)}>+</button>
                     </div>
                   </div>
@@ -163,12 +196,10 @@ function App() {
           ))}
         </div>
 
-        {/* Cart Panel */}
         <div className={`cart-panel ${showCart ? "show" : ""}`}>
           <div className="close-cart-btn">
             <button onClick={() => setShowCart(false)}>✖</button>
           </div>
-
           <h2>🛒 Cart</h2>
           {cart.length === 0 ? (
             <p>Cart is empty</p>
@@ -203,31 +234,18 @@ function App() {
                 </tbody>
               </table>
 
-              {/* Footer */}
               <div className="cart-footer">
-                <h3>
-                  Total: ₹{cart.reduce((sum, i) => sum + i.subtotal, 0).toFixed(2)}
-                </h3>
-                <h3>
-                  Discounted Total: ₹
-                  {(cart.reduce((sum, i) => sum + i.subtotal, 0) * 0.85).toFixed(2)}
-                </h3>
-                <button className="download-btn" onClick={downloadPDF}>
-                  Download PDF
-                </button>
+                <h3>Total: ₹{cart.reduce((sum, i) => sum + i.subtotal, 0).toFixed(2)}</h3>
+                <h3>Discounted Total: ₹{(cart.reduce((sum, i) => sum + i.subtotal, 0) * 0.85).toFixed(2)}</h3>
+                <button className="download-btn" onClick={downloadPDF}>Download PDF</button>
               </div>
             </>
           )}
         </div>
       </div>
 
-      {/* Toggle button - only for small screens */}
       <div className="cart-toggle-btn">
-        {!showCart && (
-          <button onClick={() => setShowCart(true)}>
-            Show Cart 🛒 ({cart.length})
-          </button>
-        )}
+        {!showCart && <button onClick={() => setShowCart(true)}>Show Cart 🛒 ({cart.length})</button>}
       </div>
     </div>
   );
