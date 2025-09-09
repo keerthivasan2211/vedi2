@@ -1,234 +1,189 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 import "./App.css";
 
-const API = "https://vedi2-backend.onrender.com";
+const API = "https://vedi2-backend.onrender.com"; // your Render backend
 
 function App() {
-  const [products, setProducts] = useState({});
+  const [products, setProducts] = useState([]);
   const [cart, setCart] = useState([]);
-  const [search, setSearch] = useState("");
-  const [billName, setBillName] = useState("");
-  const [showCart, setShowCart] = useState(false);
-  const [loading, setLoading] = useState(true); // ✅ loader state
+  const [customerName, setCustomerName] = useState("");
+  const [loading, setLoading] = useState(true); // loader state
 
-  const fetchProducts = async () => {
-    const res = await axios.get(`${API}/products`);
-    setProducts(res.data);
-  };
-
-  const fetchCart = async () => {
-    const res = await axios.get(`${API}/cart/display`);
-    setCart(res.data.cartDetails);
-  };
-
+  // Fetch products
   useEffect(() => {
-    const loadData = async () => {
-      setLoading(true);
-      await Promise.all([fetchProducts(), fetchCart()]);
-      setLoading(false);
+    const fetchProducts = async () => {
+      try {
+        const res = await axios.get(`${API}/products`);
+        setProducts(res.data);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      } finally {
+        setLoading(false);
+      }
     };
-    loadData();
+    fetchProducts();
   }, []);
 
-  useEffect(() => {
-    document.body.classList.toggle("cart-open", showCart);
-  }, [showCart]);
-
-  const increaseCart = async (name) => {
-    await axios.put(`${API}/cart/increase/${name}`);
-    fetchCart();
-  };
-
-  const decreaseCart = async (name) => {
-    await axios.put(`${API}/cart/decrease/${name}`);
-    fetchCart();
-  };
-
-  const getQuantity = (name) => {
-    const item = cart.find((i) => i.name === name);
-    return item ? item.quantity : 0;
-  };
-
-  const filteredProducts = Object.keys(products).reduce((acc, group) => {
-    const groupMatches = group.toLowerCase().includes(search.toLowerCase());
-    const filteredItems = products[group].filter((item) =>
-      item.name.toLowerCase().includes(search.toLowerCase())
-    );
-    if (groupMatches || filteredItems.length > 0) {
-      acc[group] = filteredItems.length > 0 ? filteredItems : products[group];
+  // Add to cart
+  const addToCart = (product) => {
+    const existing = cart.find((item) => item.name === product.name);
+    if (existing) {
+      const updated = cart.map((item) =>
+        item.name === product.name
+          ? { ...item, qty: item.qty + 1, subtotal: (item.qty + 1) * item.price }
+          : item
+      );
+      setCart(updated);
+    } else {
+      setCart([...cart, { ...product, qty: 1, subtotal: product.price }]);
     }
-    return acc;
-  }, {});
+  };
 
-  const downloadPDF = () => {
-    if (cart.length === 0) return;
+  // Totals
+  const total = cart.reduce((sum, item) => sum + item.subtotal, 0);
+  const discountedTotal = (total * 0.85).toFixed(2);
 
-    if (!billName.trim()) {
-      alert("⚠️ Please enter your name before downloading the bill.");
+  // Download bill
+  const downloadBill = () => {
+    if (!customerName.trim()) {
+      alert("Please enter your name");
       return;
     }
 
-    const doc = new jsPDF();
-    doc.setFontSize(18);
-    doc.text("🛒 Firework Store Invoice", 14, 22);
-    doc.setFontSize(12);
-    doc.setTextColor(100);
+    const now = new Date();
+    const dateTime = now.toLocaleString();
+    const billName = `${customerName}_${now.toISOString().replace(/[:.]/g, "-")}.pdf`;
 
-    const tableColumn = ["Name", "Original Price", "Discounted Price", "Quantity", "Subtotal"];
-    const tableRows = cart.map((item) => [
-      item.name,
-      `₹${item.originalPrice.toFixed(2)}`,
-      `₹${item.discountedPrice.toFixed(2)}`,
-      item.quantity,
-      `₹${item.subtotal.toFixed(2)}`
-    ]);
+    const doc = new jsPDF();
+    doc.setFontSize(16);
+    doc.text("Fireworks Store Bill", 14, 20);
+    doc.setFontSize(12);
+    doc.text(`Customer: ${customerName}`, 14, 30);
+    doc.text(`Date & Time: ${dateTime}`, 14, 37);
 
     autoTable(doc, {
-      head: [tableColumn],
-      body: tableRows,
-      startY: 30,
-      styles: { fontSize: 10 },
-      headStyles: { fillColor: [74, 144, 226] }
+      head: [["Product", "Qty", "Price", "Subtotal"]],
+      body: cart.map((item) => [
+        item.name,
+        item.qty,
+        `₹${item.price}`,
+        `₹${item.subtotal.toFixed(2)}`
+      ]),
+      startY: 45,
     });
 
-    const originalTotal = cart.reduce((sum, item) => sum + item.subtotal, 0);
-    const discountedTotal = (originalTotal * 0.85).toFixed(2);
+    doc.text(`Total: ₹${total.toFixed(2)}`, 14, doc.lastAutoTable.finalY + 10);
+    doc.text(`Discounted (15% OFF): ₹${discountedTotal}`, 14, doc.lastAutoTable.finalY + 20);
 
-    const now = new Date();
-    const dateStr = now.toLocaleDateString();
-    const timeStr = now.toLocaleTimeString();
-    const fileDate = now.toISOString().split("T")[0];
-
-    let yPos = doc.lastAutoTable.finalY + 15;
-    doc.setFontSize(12);
-    doc.text(`Customer Name: ${billName}`, 14, yPos);
-    doc.text(`Date: ${dateStr}`, 14, yPos + 10);
-    doc.text(`Time: ${timeStr}`, 14, yPos + 20);
-
-    doc.setFontSize(14);
-    doc.setTextColor(0, 0, 0);
-    doc.text(`Original Total: ₹${originalTotal.toFixed(2)}`, 14, yPos + 35);
-    doc.text(`Discounted Total: ₹${discountedTotal}`, 14, yPos + 45);
-
-    doc.save(`${billName}_${fileDate}_invoice.pdf`);
+    doc.save(billName);
   };
-
-  // ✅ Loader UI
-  if (loading) {
-    return (
-      <div className="loader-container">
-        <div className="spinner"></div>
-        <p>⏳ Waking up server, please wait...</p>
-      </div>
-    );
-  }
 
   return (
     <div className="App">
-      {/* Search Bar */}
-      <div className="search-bar">
-        <input
-          type="text"
-          placeholder="Search by product or group..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-      </div>
+      <h1>🎆 Fireworks Store 🎆</h1>
 
-      {/* Main Layout: Products + Cart */}
-      <div className="main-content">
-        <div className="products">
-          {Object.keys(filteredProducts).map((group) => (
-            <div key={group} className="group">
-              <h2>{group}</h2>
-
-              <div className="group-items">
-                {filteredProducts[group].map((item) => (
-                  <div key={item.name} className="product-card">
-                    <h3>{item.name}</h3>
-                    <h3>{item.tamilName}</h3>
-                    <p>Original Price: ₹{item.price.toFixed(2)}</p>
-                    <div className="quantity-control">
-                      <button onClick={() => decreaseCart(item.name)}>-</button>
-                      <span className="quantity">{getQuantity(item.name)}</span>
-                      <button onClick={() => increaseCart(item.name)}>+</button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
+      {/* Loader */}
+      {loading ? (
+        <div className="loader-container">
+          <div className="spinner"></div>
+          <p>⏳ Products Loading...</p>
         </div>
-
-        {/* Cart Panel */}
-        <div className={`cart-panel ${showCart ? "show" : ""}`}>
-          <div className="close-cart-btn">
-            <button onClick={() => setShowCart(false)}>✖</button>
+      ) : (
+        <>
+          {/* Products */}
+          <div className="product-section">
+            <h2>Products</h2>
+            {products.map((p, i) => (
+              <div key={i} className="product">
+                <span>
+                  {p.name} - ₹{p.price}
+                </span>
+                <button onClick={() => addToCart(p)}>Add</button>
+              </div>
+            ))}
           </div>
 
-          <h2>🛒 Cart</h2>
-          {cart.length === 0 ? (
-            <p>Cart is empty</p>
-          ) : (
-            <>
-              <div className="bill-name-input">
+          {/* Cart */}
+          <div className="cart-section">
+            <h2>🛒 Cart</h2>
+            {cart.length === 0 ? (
+              <p>No items in cart</p>
+            ) : (
+              cart.map((item, index) => (
+                <div key={index} className="cart-item">
+                  <span>{item.name}</span>
+                  <div className="qty-controls">
+                    <button
+                      onClick={() => {
+                        if (item.qty > 1) {
+                          const updatedCart = [...cart];
+                          updatedCart[index].qty -= 1;
+                          updatedCart[index].subtotal =
+                            updatedCart[index].qty * updatedCart[index].price;
+                          setCart(updatedCart);
+                        }
+                      }}
+                    >
+                      -
+                    </button>
+                    <input
+                      type="number"
+                      value={item.qty}
+                      onChange={(e) => {
+                        const newQty = parseInt(e.target.value) || 1;
+                        if (newQty > 0) {
+                          const updatedCart = [...cart];
+                          updatedCart[index].qty = newQty;
+                          updatedCart[index].subtotal =
+                            updatedCart[index].qty * updatedCart[index].price;
+                          setCart(updatedCart);
+                        }
+                      }}
+                      style={{
+                        width: "50px",
+                        textAlign: "center",
+                        margin: "0 5px",
+                      }}
+                    />
+                    <button
+                      onClick={() => {
+                        const updatedCart = [...cart];
+                        updatedCart[index].qty += 1;
+                        updatedCart[index].subtotal =
+                          updatedCart[index].qty * updatedCart[index].price;
+                        setCart(updatedCart);
+                      }}
+                    >
+                      +
+                    </button>
+                  </div>
+                  <span>₹{item.subtotal.toFixed(2)}</span>
+                </div>
+              ))
+            )}
+
+            {cart.length > 0 && (
+              <>
+                <h3>Total: ₹{total.toFixed(2)}</h3>
+                <h3>Discounted (15%): ₹{discountedTotal}</h3>
                 <input
                   type="text"
-                  placeholder="Enter Your Name"
-                  value={billName}
-                  onChange={(e) => setBillName(e.target.value)}
+                  placeholder="Enter your name"
+                  value={customerName}
+                  onChange={(e) => setCustomerName(e.target.value)}
+                  style={{ marginTop: "10px", padding: "5px" }}
                 />
-              </div>
-              <table>
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>Price</th>
-                    <th>Qty</th>
-                    <th>Subtotal</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {cart.map((item) => (
-                    <tr key={item.name}>
-                      <td>{item.name}</td>
-                      <td>₹{item.originalPrice.toFixed(2)}</td>
-                      <td>{item.quantity}</td>
-                      <td>₹{item.subtotal.toFixed(2)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-
-              {/* Footer */}
-              <div className="cart-footer">
-                <h3>
-                  Total: ₹{cart.reduce((sum, i) => sum + i.subtotal, 0).toFixed(2)}
-                </h3>
-                <h3>
-                  Discounted Total: ₹
-                  {(cart.reduce((sum, i) => sum + i.subtotal, 0) * 0.85).toFixed(2)}
-                </h3>
-                <button className="download-btn" onClick={downloadPDF}>
-                  Download PDF
+                <button onClick={downloadBill} style={{ marginTop: "10px" }}>
+                  Download Bill
                 </button>
-              </div>
-            </>
-          )}
-        </div>
-      </div>
-
-      {/* Toggle button - only for small screens */}
-      <div className="cart-toggle-btn">
-        {!showCart && (
-          <button onClick={() => setShowCart(true)}>
-            Show Cart 🛒 ({cart.length})
-          </button>
-        )}
-      </div>
+              </>
+            )}
+          </div>
+        </>
+      )}
     </div>
   );
 }
