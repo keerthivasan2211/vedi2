@@ -235,8 +235,8 @@ function App() {
               </table>
 
               <div className="cart-footer">
-                <h3>Total: ₹{cart.reduce((sum, i) => sum + i.subtotal, 0).toFixed(2)}</h3>
-                <h3>Discounted Total: ₹{(cart.reduce((sum, i) => sum + i.subtotal, 0) * 0.85).toFixed(2)}</h3>
+                <div className="tt">Total: ₹{cart.reduce((sum, i) => sum + i.subtotal, 0).toFixed(2)}</div>
+                <div className="tt">Discounted Total: ₹{(cart.reduce((sum, i) => sum + i.subtotal, 0) * 0.85).toFixed(2)}</div>
                 <button className="download-btn" onClick={downloadPDF}>Download PDF</button>
               </div>
             </>
