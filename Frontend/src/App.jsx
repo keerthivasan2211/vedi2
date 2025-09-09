@@ -245,7 +245,7 @@ function App() {
       </div>
 
       <div className="cart-toggle-btn">
-        {!showCart && <button onClick={() => setShowCart(true)}>Show Cart 🛒 ({cart.length})</button>}
+        {!showCart && <button onClick={() => setShowCart(true)}>Cart-({cart.length})</button>}
       </div>
     </div>
   );
