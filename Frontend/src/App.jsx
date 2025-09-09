@@ -12,6 +12,7 @@ function App() {
   const [search, setSearch] = useState("");
   const [billName, setBillName] = useState("");
   const [showCart, setShowCart] = useState(false);
+  const [loading, setLoading] = useState(true); // ✅ loader state
 
   const fetchProducts = async () => {
     const res = await axios.get(`${API}/products`);
@@ -24,8 +25,12 @@ function App() {
   };
 
   useEffect(() => {
-    fetchProducts();
-    fetchCart();
+    const loadData = async () => {
+      setLoading(true);
+      await Promise.all([fetchProducts(), fetchCart()]);
+      setLoading(false);
+    };
+    loadData();
   }, []);
 
   useEffect(() => {
@@ -73,7 +78,7 @@ function App() {
     doc.setTextColor(100);
 
     const tableColumn = ["Name", "Original Price", "Discounted Price", "Quantity", "Subtotal"];
-    const tableRows = cart.map(item => [
+    const tableRows = cart.map((item) => [
       item.name,
       `₹${item.originalPrice.toFixed(2)}`,
       `₹${item.discountedPrice.toFixed(2)}`,
@@ -92,15 +97,11 @@ function App() {
     const originalTotal = cart.reduce((sum, item) => sum + item.subtotal, 0);
     const discountedTotal = (originalTotal * 0.85).toFixed(2);
 
-    // ✅ Get current date and time
     const now = new Date();
     const dateStr = now.toLocaleDateString();
     const timeStr = now.toLocaleTimeString();
-
-    // ✅ Format date for filename (YYYY-MM-DD)
     const fileDate = now.toISOString().split("T")[0];
 
-    // ✅ Better alignment for details
     let yPos = doc.lastAutoTable.finalY + 15;
     doc.setFontSize(12);
     doc.text(`Customer Name: ${billName}`, 14, yPos);
@@ -112,9 +113,19 @@ function App() {
     doc.text(`Original Total: ₹${originalTotal.toFixed(2)}`, 14, yPos + 35);
     doc.text(`Discounted Total: ₹${discountedTotal}`, 14, yPos + 45);
 
-    // ✅ Save with billName + date in file name
     doc.save(`${billName}_${fileDate}_invoice.pdf`);
   };
+
+  // ✅ Loader UI
+  if (loading) {
+    return (
+      <div className="loader-container">
+        <div className="spinner"></div>
+        <p>⏳ Waking up server, please wait...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="App">
       {/* Search Bar */}
