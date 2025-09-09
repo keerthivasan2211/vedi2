@@ -134,7 +134,7 @@ function App() {
     return (
       <div className="loader-container">
         <div className="spinner"></div>
-        <p>⏳ Waking up server, please wait...</p>
+        <p>⏳ Products Loading , please wait...</p>
       </div>
     );
   }
