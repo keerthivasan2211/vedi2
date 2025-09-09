@@ -92,6 +92,9 @@ function App() {
     const total = cart.reduce((sum, item) => sum + item.subtotal, 0);
     const discountedTotal = total.toFixed(2);
 
+const originalTotal = cart.reduce((sum, item) => sum + item.subtotal, 0);
+const discountedTotal_total = (originalTotal * 0.85).toFixed(2);
+
     // ✅ Get current date and time
     const now = new Date();
     const dateStr = now.toLocaleDateString();
@@ -104,6 +107,8 @@ function App() {
     doc.text(`Date: ${dateStr}`, 14, doc.lastAutoTable.finalY + 20);
     doc.text(`Time: ${timeStr}`, 14, doc.lastAutoTable.finalY + 30);
     doc.text(`Total: ₹${discountedTotal}`, 14, doc.lastAutoTable.finalY + 40);
+doc.text(`Discount Total: ₹${discountedTotal_total}`, 14, doc.lastAutoTable.finalY + 40);
+
 
     // ✅ Save with billName + date in file name
     doc.save(`${billName}_${fileDate}_invoice.pdf`);
