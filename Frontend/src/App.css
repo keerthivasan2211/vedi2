@@ -31,23 +31,21 @@ h1 {
 
 /* Search Bar */
 .search-bar {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  position: sticky;
-  top: 0;
-  background: #1b1c22;
-  padding:0;
-  z-index: 1000;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.6);
-  margin-bottom:12px;
+     width: 50%;
+    display: flex;
+    justify-content: flex-start;
+    background: #1b1c22;
+    padding: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 8px #0009;
+    margin-bottom: 12px;
 }
 .search-bar input {
   width: 90%;
   max-width: 500px;
   padding: 12px 20px;
   border: 2px solid #444;
-  border-radius: 30px;
+  border-radius: 5px;
   font-size: 1rem;
   outline: none;
   background: #2a2c36;
@@ -79,7 +77,7 @@ h1 {
 /* Product Cards */
 .group { 
   background: #2a2c36; 
-  border-radius: 16px; 
+  border-radius: 5px; 
   padding: 20px; 
   box-shadow: 0 6px 20px rgba(0,0,0,0.5); 
 }
@@ -98,7 +96,7 @@ h1 {
   border-radius: 8px;
   padding: 15px;
   width: 100%;
-  max-width: 288px;
+  max-width: 282px;
   text-align: left;
   box-shadow: 0 5px 15px rgba(0,0,0,0.5);
   display: flex;
